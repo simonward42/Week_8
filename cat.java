@@ -1,16 +1,23 @@
 import java.io.*;
 public class cat {
 	public static void main(String[] args) {
-		String filename;
+		String filename = null;
 		File file;
+		BufferedReader in = null;
 		try {
 			filename = args[0];
 			file = new File(filename);
-			BufferedReader in = new BufferedReader(new FileReader(file));
+			if(file.isDirectory()) {
+				System.out.println(filename + "is a directory!");
+				return;
+			}
+			
+			in = new BufferedReader(new FileReader(file));
 			
 			System.out.println(filename + ":");
-			while((String line = in.readLine()) != null) {
-				System.out.print(line);
+			String line;
+			while((line = in.readLine()) != null) {
+				System.out.println(line);
 			}
 		} catch (IndexOutOfBoundsException ex) {
 			System.out.println("Must provide a file to cat: use >java cat <file name>");
@@ -19,7 +26,13 @@ public class cat {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		} finally {
-			in.close();
+			try {
+				if(in != null) {
+					in.close();
+				}
+			}catch (IOException ex) {
+				System.out.println("Unable to close " + filename);
+			}
 		}
 	}
 }
